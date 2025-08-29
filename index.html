@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Confession</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Courier New', monospace;
+            background: linear-gradient(135deg, #f5f5f5 0%, #e0e0e0 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            color: #333;
+        }
+
+        .mail-container {
+            position: relative;
+            max-width: 500px;
+            width: 100%;
+            perspective: 1000px;
+        }
+
+        .mail {
+            background: white;
+            border: 2px solid #333;
+            border-radius: 8px;
+            padding: 0;
+            box-shadow: 
+                0 20px 40px rgba(0, 0, 0, 0.15),
+                0 4px 12px rgba(0, 0, 0, 0.1);
+            transform-origin: top center;
+            transition: all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .mail.closed {
+            transform: rotateX(-10deg) translateY(0);
+            background: linear-gradient(135deg, #ffffff 0%, #f8f8f8 100%);
+        }
+
+        .mail.open {
+            transform: rotateX(0) translateY(-20px);
+            box-shadow: 
+                0 30px 60px rgba(0, 0, 0, 0.25),
+                0 8px 24px rgba(0, 0, 0, 0.15);
+        }
+
+        .mail-flap {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 40px;
+            background: #333;
+            transform-origin: top center;
+            transition: transform 0.6s ease;
+            z-index: 2;
+        }
+
+        .mail.closed .mail-flap {
+            transform: rotateX(0);
+        }
+
+        .mail.open .mail-flap {
+            transform: rotateX(-180deg);
+        }
+
+        .mail-address {
+            padding: 30px;
+            text-align: center;
+            border-bottom: 1px solid #ddd;
+            background: white;
+        }
+
+        .mail-to {
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-bottom: 5px;
+            letter-spacing: 1px;
+        }
+
+        .mail-from {
+            font-size: 0.9rem;
+            color: #666;
+            font-style: italic;
+        }
+
+        .mail-stamp {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            border: 2px solid #333;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            font-weight: bold;
+            background: white;
+            z-index: 3;
+        }
+
+        .letter {
+            padding: 40px;
+            background: white;
+            min-height: 300px;
+            transform: translateY(100%);
+            opacity: 0;
+            transition: all 0.6s ease;
+            line-height: 1.6;
+        }
+
+        .mail.open .letter {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .letter-date {
+            text-align: right;
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 0.9rem;
+        }
+
+        .letter-content {
+            margin-bottom: 30px;
+        }
+
+        .letter-content p {
+            margin-bottom: 20px;
+            text-align: justify;
+        }
+
+        .letter-signature {
+            text-align: right;
+            margin-top: 40px;
+            font-style: italic;
+            font-weight: bold;
+        }
+
+        .mail-indicator {
+            text-align: center;
+            margin-top: 20px;
+            color: #666;
+            font-size: 0.9rem;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.6; }
+            50% { opacity: 1; }
+        }
+
+        .paper-texture {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: 
+                linear-gradient(rgba(0,0,0,0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0,0,0,0.03) 1px, transparent 1px);
+            background-size: 20px 20px;
+            pointer-events: none;
+            opacity: 0.5;
+        }
+
+        @media (max-width: 600px) {
+            .mail {
+                margin: 20px;
+            }
+            
+            .letter {
+                padding: 30px 20px;
+            }
+            
+            .mail-address {
+                padding: 20px;
+            }
+            
+            .mail-stamp {
+                width: 40px;
+                height: 40px;
+                font-size: 0.7rem;
+            }
+        }
+
+        .typewriter {
+            overflow: hidden;
+            border-right: 2px solid #333;
+            white-space: nowrap;
+            animation: typing 2s steps(20, end), blink-caret 0.8s step-end infinite;
+        }
+
+        @keyframes typing {
+            from { width: 0 }
+            to { width: 100% }
+        }
+
+        @keyframes blink-caret {
+            from, to { border-color: transparent }
+            50% { border-color: #333 }
+        }
+    </style>
+</head>
+<body>
+    <div class="mail-container">
+        <div class="mail closed" id="mail">
+            <div class="paper-texture"></div>
+            <div class="mail-flap"></div>
+            <div class="mail-stamp">POST</div>
+            
+            <div class="mail-address">
+                <div class="mail-to">To Someone Special</div>
+                <div class="mail-from">From My Heart</div>
+            </div>
+            
+            <div class="letter">
+                <div class="letter-date">Today</div>
+                
+                <div class="letter-content">
+                    <p>wazzup</p>
+                    
+                    <p>ancheta alyas kalbo</p>
+                    
+                    <p>crush kita aya</p>
+                    
+                    <p>hell yeah</p>
+                </div>
+                
+                <div class="letter-signature">
+                    <span class="typewriter">From Me</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="mail-indicator" id="mailIndicator">Click to open</div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const mail = document.getElementById('mail');
+            const mailIndicator = document.getElementById('mailIndicator');
+            let isOpen = false;
+
+            // Open/close mail
+            mail.addEventListener('click', function() {
+                if (!isOpen) {
+                    mail.classList.remove('closed');
+                    mail.classList.add('open');
+                    mailIndicator.textContent = 'Click to close';
+                    isOpen = true;
+                } else {
+                    mail.classList.remove('open');
+                    mail.classList.add('closed');
+                    mailIndicator.textContent = 'Click to open';
+                    isOpen = false;
+                }
+            });
+
+            // Hover effects
+            mail.addEventListener('mouseenter', function() {
+                if (!isOpen) {
+                    mail.style.transform = 'rotateX(-5deg) translateY(-5px)';
+                    mail.style.boxShadow = '0 25px 50px rgba(0, 0, 0, 0.2)';
+                }
+            });
+
+            mail.addEventListener('mouseleave', function() {
+                if (!isOpen) {
+                    mail.style.transform = 'rotateX(-10deg) translateY(0)';
+                    mail.style.boxShadow = 
+                        '0 20px 40px rgba(0, 0, 0, 0.15), ' +
+                        '0 4px 12px rgba(0, 0, 0, 0.1)';
+                }
+            });
+        });
+    </script>
+</body>
+</html>
